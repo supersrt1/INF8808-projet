@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="Description" content="Projet pour le cours INF8808.">
+        <title>Projet | INF8808</title>
+
+        <link rel="stylesheet" href="assets/style.css">
+    </head>
+
+    <body>
+
+        <div id="title-container">
+            <h1>Tableau de bord : Ponctualité et Achalandage</h1>
+        </div>
+
+        <div id="section-filter">
+            <h2>FILTRAGE</h2>
+
+            <div class="viz-container">
+                <p>ici il va avoir les dropdown menus</p>
+            </div>
+
+            <div class="viz-container">
+                <svg id="viz1-svg"></svg>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-6 col-s-12" id="section-by-stops">
+                <h2>ACHALANDAGE ET PONCTUALITÉ PAR ARRÊT</h2>
+
+                <h3>Achalandage</h3>
+                <div class="viz-container">
+                    <svg id="viz2-svg"></svg>
+                </div>
+
+                <h3>Ponctualité</h3>
+                <div class="viz-container">
+                    <svg id="viz3-svg"></svg>
+                </div>
+            </div>
+
+            <div class="col-6 col-s-12" id="section-by-period">
+                <h2>ACHALANDAGE EN FONCTION DE LA PÉRIODE TEMPORELLE</h2>
+
+                <h3>Taux d'avance</h3>
+                <div class="viz-container">
+                    <svg id="viz4a-svg"></svg>
+                </div>
+
+                <h3>Taux de retard</h3>
+                <div class="viz-container">
+                    <svg id="viz4b-svg"></svg>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://d3js.org/d3.v5.js"></script>
+        <script type="module" src="index.js"></script>
+      </body>
+</html>
