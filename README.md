@@ -1,3 +1,3 @@
 INF8808-projet
 
-CD/CI test
+CD/CI test with automatic build
