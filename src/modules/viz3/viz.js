@@ -15,7 +15,7 @@ export const viz = (selection, props) => {
 
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
-
+    
     selection.selectAll('text')
         .data([null])
         .join('text')

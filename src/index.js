@@ -2,6 +2,8 @@ import * as viz1 from './modules/viz1/viz.js'
 import * as viz2 from './modules/viz2/viz.js'
 import * as viz3 from './modules/viz3/viz.js'
 import * as viz4 from './modules/viz4/viz.js'
+import * as helper from './scripts/helper.js'
+import * as preprocess from './scripts/preprocess.js'
 
 const svg1 = d3.select('#viz1-svg')
 const svg2 = d3.select('#viz2-svg')
@@ -81,7 +83,15 @@ Promise.all([
     d3.csv('./exo_data.csv'),
     d3.json('./montreal.json')
 ]).then(([fetchExoData, fetchGeoData]) => {
-        exoData = fetchExoData
+        exoData = preprocess.convertStringToNumberForNumericFields(
+            preprocess.addMetaData(fetchExoData)
+        )
         geoData = fetchGeoData
+
+        // Useful for development - Can be removed safely -----
+        helper.debugLogAllUniqueValues(exoData)
+        console.log(preprocess.aggregatePonctualite(exoData, ['arret_nom']))
+        // ----------------------------------------------------
+
         render()
     })
