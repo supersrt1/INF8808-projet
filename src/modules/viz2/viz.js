@@ -1,5 +1,9 @@
 /* eslint-disable indent */
 
+export function updateData(filteredData) {
+    // Optional, for performance
+}
+
 export const viz = (selection, props) => {
     const {
         data,

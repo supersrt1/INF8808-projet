@@ -1,4 +1,12 @@
+import * as preprocess from './../../scripts/preprocess.js'
+
 /* eslint-disable indent */
+
+let viz3Data = []
+
+export function updateData(filteredData) {
+    viz3Data = preprocess.aggregatePonctualite(filteredData.byLineDirectionDate, ['sequence_arret'])
+}
 
 export const viz = (selection, props) => {
     const {
@@ -15,7 +23,7 @@ export const viz = (selection, props) => {
 
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
-    
+
     selection.selectAll('text')
         .data([null])
         .join('text')
