@@ -15,6 +15,14 @@ export function getMinMaxDate(data) {
     return [new Date(minMax[0]), new Date(minMax[1])]
 }
 
+export function setOptionsForDropdown(selection, options) {
+    selection.selectAll('option')
+        .data(options)
+        .join('option')
+            .attr('value', d => d)
+            .text(d => d)
+}
+
 export function debugLogAllUniqueValues(data) {
     data.columns.forEach(column => {
         console.log(column + ' unique values:')

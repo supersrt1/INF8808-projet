@@ -44,7 +44,7 @@ const setLine = (newLine) => {
 }
 
 const setDateFilter = (minDate, maxDate) => {
-    dateFilter = [Date(minDate), Date(maxDate)]
+    dateFilter = [new Date(parseInt(minDate)), new Date(parseInt(maxDate))]
     refreshFilteredData(DATE_FILTER)
     render()
 }
@@ -77,7 +77,7 @@ const setDefaultFilters = (data) => {
 const refreshFilteredData = (updatedFilter=0) => {
     filteredData.raw = exoData
     if (updatedFilter <= LINE_FILTER)
-        filteredData.byLine = filteredData.raw.filter(element => element['line'] == line)
+        filteredData.byLine = filteredData.raw.filter(element => element['ligne'] == line)
     if (updatedFilter <= DIRECTION_FILTER) {
         if (direction == BOTH_DIRECTION)
             filteredData.byLineDirection = filteredData.byLine
@@ -97,7 +97,33 @@ const refreshFilteredData = (updatedFilter=0) => {
             filteredData.byLineDirectionDateStop = filteredData.byLine.filter(element => element['arret_nom'] == stop)
     }
 
+    updateFilterOptions()
     updateData()
+}
+
+const updateFilterOptions = () => {
+    const filterGroup = d3.select('#section-filter').select('.viz-container')
+    helper.setOptionsForDropdown(filterGroup.select('.filter-line'),
+        helper.getUniqueValues(exoData, 'ligne'))
+    helper.setOptionsForDropdown(filterGroup.select('.filter-direction'),
+        [BOTH_DIRECTION].concat(helper.getUniqueValues(filteredData.byLine, 'direction')))
+    helper.setOptionsForDropdown(filterGroup.select('.filter-min-date'),
+        helper.getUniqueValues(filteredData.byLineDirection, 'date_number'))
+    helper.setOptionsForDropdown(filterGroup.select('.filter-max-date'),
+        helper.getUniqueValues(filteredData.byLineDirection, 'date_number').reverse())
+    helper.setOptionsForDropdown(filterGroup.select('.filter-stop'),
+        [ALL_STOPS].concat(helper.getUniqueValues(filteredData.byLineDirectionDate, 'arret_nom')))
+}
+
+const setFilterListeners = () => {
+    const filterGroup = d3.select('#section-filter').select('.viz-container')
+    filterGroup.select('.filter-line').on('change', () => setLine(filterGroup.select('.filter-line').node().value))
+    filterGroup.select('.filter-direction').on('change', () => setDirection(filterGroup.select('.filter-direction').node().value))
+    const callSetDateFilter = () => setDateFilter(
+        filterGroup.select('.filter-min-date').node().value, filterGroup.select('.filter-max-date').node().value)
+    filterGroup.select('.filter-min-date').on('change', callSetDateFilter)
+    filterGroup.select('.filter-max-date').on('change', callSetDateFilter)
+    filterGroup.select('.filter-stop').on('change', () => setStop(filterGroup.select('.filter-stop').node().value))
 }
 
 const updateData = () => {
@@ -152,6 +178,8 @@ Promise.all([
         geoData = fetchGeoData
         setDefaultFilters(exoData)
         refreshFilteredData()
+        updateFilterOptions()
+        setFilterListeners()
 
         // Useful for development - Can be removed safely -----
         helper.debugLogAllUniqueValues(exoData)
