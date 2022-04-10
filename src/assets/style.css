@@ -82,7 +82,7 @@ svg {
     .col-s-11 {width: 91.66%;}
     .col-s-12 {width: 100%;}
   }
-  @media only screen and (min-width: 1310px) {
+  @media only screen and (min-width: 1000px) {
     /* For desktop: */
     .col-1 {width: 8.33%;}
     .col-2 {width: 16.66%;}
@@ -122,4 +122,55 @@ svg {
 
 #viz4b-svg {
     height: 250px;
+}
+
+/* VIZ 1 */
+
+.viz1-axis-x .tick line {
+    display: none;
+}
+
+.viz1-axis-y .tick text, .viz1-axis-x .tick text {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.viz1-axis-x path {
+    display: none;
+}
+
+@media only screen and (max-width: 800px) {
+    .viz1-axis-x .tick:nth-child(even) {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .viz1-axis-x .tick:not(:nth-child(3n+0)) {
+        display: none;
+    }
+
+    .viz1-axis-x .tick:nth-child(3n+0) {
+        display: block;
+    }
+}
+
+.viz1-axis-y .tick line {
+    stroke: lightgrey;
+}
+
+.viz1-axis-y path {
+    display: none;
+}
+
+#viz1-tooltip-title {
+    font-size: 10px;
+    margin: 0 0 5px 0;
+}
+
+.viz1-tooltip-value {
+    font-size: 10px;
+    margin: 0;
 }

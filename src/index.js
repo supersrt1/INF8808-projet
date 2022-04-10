@@ -44,7 +44,7 @@ const setLine = (newLine) => {
 }
 
 const setDateFilter = (minDate, maxDate) => {
-    dateFilter = [new Date(parseInt(minDate)), new Date(parseInt(maxDate))]
+    dateFilter = [helper.createLocalDate(+minDate), helper.createLocalDate(+maxDate)]
     refreshFilteredData(DATE_FILTER)
     render()
 }
@@ -134,9 +134,16 @@ const updateData = () => {
 }
 
 const render = () => {
+    // Clean tooltips
+    d3.selectAll('.d3-tip').remove()
+
     svg1.call(viz1.viz, {
         data: filteredData,
-        render: render
+        stop: stop,
+        ALL_STOPS: ALL_STOPS,
+        dateFilter: dateFilter,
+        setDateFilter: setDateFilter,
+        render: render,
     })
     
     svg2.call(viz2.viz, {
