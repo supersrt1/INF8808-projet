@@ -1,4 +1,5 @@
 /* eslint-disable indent */
+import * as helper from './../../scripts/helper.js'
 
 import * as d3Chromatic from 'd3-scale-chromatic'
 
@@ -9,9 +10,9 @@ export function updateData(filteredData) {
     dataViz4 = filteredData.byLineDirectionDateStop
 
     // Add day of the week
-    let days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+    let days = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
     dataViz4.forEach(element => {
-        let date = new Date(element.date)
+        let date = helper.createLocalDate(element.date_number)
         element['day'] = days[date.getDay()]
     });
 

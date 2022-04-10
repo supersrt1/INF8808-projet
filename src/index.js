@@ -45,6 +45,7 @@ const setLine = (newLine) => {
 
 const setDateFilter = (minDate, maxDate) => {
     dateFilter = [helper.createLocalDate(+minDate), helper.createLocalDate(+maxDate)]
+    console.log(dateFilter)
     refreshFilteredData(DATE_FILTER)
     render()
 }
@@ -85,8 +86,8 @@ const refreshFilteredData = (updatedFilter=0) => {
             filteredData.byLineDirection = filteredData.byLine.filter(element => element['direction'] == direction)
     }
     if (updatedFilter <= DATE_FILTER) {
-        const minDate = dateFilter[0].getTime()
-        const maxDate = dateFilter[1].getTime()
+        const minDate = helper.convertLocalDateToDateNumber(dateFilter[0])
+        const maxDate = helper.convertLocalDateToDateNumber(dateFilter[1])
         filteredData.byLineDirectionDate = filteredData.byLineDirection.filter(
             element => minDate <= element['date_number'] && element['date_number'] <= maxDate)
     }
