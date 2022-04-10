@@ -21,23 +21,15 @@ export const viz = (selection, props) => {
         height
     } = selection.node().getBoundingClientRect()
 
-    const margin = { top: 10, right: 10, bottom: 10, left: 10 }
+    const yAxisWidth = 15
+    const xAxisHeight = 15
+    const xAxisWidth = 15
+    const margin = { top: 10, right: 10 + xAxisWidth, bottom: 10 + xAxisHeight, left: 10 + yAxisWidth }
 
     const innerWidth = width - margin.left - margin.right
     const innerHeight = height - margin.top - margin.bottom
 
-    /*
-    selection.selectAll('text')
-        .data([null])
-        .join('text')
-            .text('ICI LA VIZUALISATION 3')
-            .attr('text-anchor', 'middle')
-            .attr('alignment-baseline', 'middle')
-            .attr('fill', 'black')
-            .attr('x', innerWidth / 2)
-            .attr('y', innerHeight / 2)
-    */
-    
+
     const xScale = d3.scaleBand()
         .domain(helper.getUniqueValues(viz3Data, 'sequence_arret'))
         .range([margin.left, width - margin.right])
@@ -45,11 +37,47 @@ export const viz = (selection, props) => {
     const yScale = d3.scaleLinear()
         .domain([0.0, 1.0])
         .range([0, innerHeight])
+    const yScaleAxis = d3.scaleLinear()
+        .domain([0.0, 1.0])
+        .range([innerHeight, 0])
+
+    const yAxis = d3.axisLeft()
+        .scale(yScaleAxis)
+        .tickValues([0.25, 0.5, 0.75])
+        .tickSizeOuter(0)
+        .tickFormat("")
     
     selection.selectAll('.viz3-graph')
         .data([null])
         .join('g')
             .attr('class', 'viz3-graph')
+    
+    selection.select('.viz3-graph').selectAll('.ylabel')
+        .data([null])
+        .join('text')
+            .text('%')
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+            .attr('x', margin.left - yAxisWidth)
+            .attr('y', margin.top)
+            .attr('class', 'ylabel')
+    
+    selection.select('.viz3-graph').selectAll('.xlabel')
+        .data([null])
+        .join('text')
+            .text('Arrêts')
+            .attr('text-anchor', 'middle')
+            .attr('alignment-baseline', 'middle')
+            .attr('x', width - margin.right)
+            .attr('y', height - xAxisHeight)
+            .attr('class', 'xlabel')
+    
+    selection.select('.viz3-graph').selectAll('.yaxis')
+        .data([null])
+        .join('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`)
+            .attr('class', 'yaxis')
+            .call(yAxis)
     
     selection.select('.viz3-graph').selectAll('.viz3-element-avance')
         .data(viz3Data)
