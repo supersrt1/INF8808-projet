@@ -2,6 +2,7 @@
 import * as helper from './../../scripts/helper.js'
 
 import * as d3Chromatic from 'd3-scale-chromatic'
+import d3Tip from 'd3-tip'
 
 let dataViz4 = []
 
@@ -90,10 +91,35 @@ export const viz = (selection, props) => {
       })
     })
 
+    // Add missing data
+    periodeHoraire.forEach(periode => {
+        dayOfTheWeek.forEach(day => {
+            if (allHeatmapData.filter(e => e.periode_horaire === periode && e.day === day).length === 0){
+                allHeatmapData.push({
+                    day: day,
+                    periode_horaire: periode,
+                    Counts: 0
+                })
+            }
+        })
+    })
+
+    periodeHoraire.forEach(periode => {
+        dayOfTheWeek.forEach(day => {
+            if (heatmapData.filter(e => e.periode_horaire === periode && e.day === day).length === 0){
+                heatmapData.push({
+                    day: day,
+                    periode_horaire: periode,
+                    Counts: 0
+                })
+            }
+        })
+    })
+
     // Get advance/late frequencies
     heatmapData.forEach((element) => {
         let totalCount = allHeatmapData.filter(d => d.periode_horaire == element.periode_horaire && d.day == element.day)[0].Counts
-        element.Counts = element.Counts/totalCount 
+        element.Counts = totalCount !== 0 ? (element.Counts/totalCount).toFixed(3) : 0
     })
 
     /* 
@@ -106,8 +132,8 @@ export const viz = (selection, props) => {
         .domain(d3.extent(heatmapData, d => d.Counts))
 
     // X and Y scales
-    const xScale = d3.scaleBand().padding(0) 
-    const yScale = d3.scaleBand().padding(0) 
+    const xScale = d3.scaleBand().padding(0.02) 
+    const yScale = d3.scaleBand().padding(0.02) 
 
     xScale
         .domain(dayOfTheWeek)
@@ -116,6 +142,18 @@ export const viz = (selection, props) => {
     yScale
         .domain(periodeHoraire)
         .range([margin.top, innerHeight])
+    
+    /* 
+        TOOLTIP
+    */
+    const getTipContent = d => {
+        return `
+            <p class="viz4-tooltip-value">${d.Counts !== 0 ? d.Counts : 'no data'}</p>
+        `
+    }
+
+    const tooltip = d3Tip().attr('class', 'd3-tip').html(getTipContent)
+        selection.call(tooltip)
     
     /* 
         HEATMAP
@@ -134,7 +172,11 @@ export const viz = (selection, props) => {
         .attr('height', yScale.bandwidth())
         .attr('x', d => xScale(d.day))
         .attr('y', d => yScale(d.periode_horaire))
-        .attr('fill', d => colorScale(d.Counts))
+        .attr('fill', d => d.Counts !== 0 ? colorScale(d.Counts) : "gray")
+        .on('mouseover', function(d, i) {
+            tooltip.show(d, this)
+        })
+        .on('mouseout', tooltip.hide)
 
     /* 
         AXIS
@@ -242,6 +284,5 @@ export const viz = (selection, props) => {
     legendAxisSelection
         .attr('transform', `translate(${x}, ${y})`)
         .call(legendAxis)
-        .call(g => g.select(".domain").remove())
-        
+        .call(g => g.select(".domain").remove())    
 }
