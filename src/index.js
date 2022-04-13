@@ -13,7 +13,6 @@ const svg4b = d3.select('#viz4b-svg')
 
 // Datasets without filtering
 let exoData
-let geoData
 
 // Filters and dynamic properties
 let line
@@ -45,7 +44,6 @@ const setLine = (newLine) => {
 
 const setDateFilter = (minDate, maxDate) => {
     dateFilter = [helper.createLocalDate(+minDate), helper.createLocalDate(+maxDate)]
-    console.log(dateFilter)
     refreshFilteredData(DATE_FILTER)
     render()
 }
@@ -176,21 +174,18 @@ window.addEventListener('resize', () => {
     render()
 })
 
-Promise.all([
-    d3.csv('./exo_data.csv'),
-    d3.json('./montreal.json')
-]).then(([fetchExoData, fetchGeoData]) => {
+d3.csv('./exo_data.csv')
+    .then(fetchExoData => {
         exoData = preprocess.convertStringToNumberForNumericFields(
             preprocess.addMetaData(fetchExoData)
         )
-        geoData = fetchGeoData
         setDefaultFilters(exoData)
         refreshFilteredData()
         updateFilterOptions()
         setFilterListeners()
 
         // Useful for development - Can be removed safely -----
-        helper.debugLogAllUniqueValues(exoData)
+        // helper.debugLogAllUniqueValues(exoData)
         // ----------------------------------------------------
 
         render()
