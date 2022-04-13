@@ -119,7 +119,7 @@ export const viz = (selection, props) => {
     // Get advance/late frequencies
     heatmapData.forEach((element) => {
         let totalCount = allHeatmapData.filter(d => d.periode_horaire == element.periode_horaire && d.day == element.day)[0].Counts
-        element.Counts = totalCount !== 0 ? (element.Counts/totalCount).toFixed(3) : 0
+        element.Counts = totalCount !== 0 ? parseFloat(((element.Counts/totalCount)*100).toFixed(1)) : 0
     })
 
     /* 
@@ -129,7 +129,7 @@ export const viz = (selection, props) => {
     // Color scale
     var colorScale = d3.scaleSequential(mode == "in advance" ? d3Chromatic.interpolateGreens : d3Chromatic.interpolateReds)
     colorScale
-        .domain(d3.extent(heatmapData, d => d.Counts))
+        .domain(mode == "in advance" ? [0,25] : [0,70]) 
 
     // X and Y scales
     const xScale = d3.scaleBand().padding(0.02) 
@@ -148,7 +148,7 @@ export const viz = (selection, props) => {
     */
     const getTipContent = d => {
         return `
-            <p class="viz4-tooltip-value">${d.Counts !== 0 ? d.Counts : 'no data'}</p>
+            <p class="viz4-tooltip-value">${d.Counts !== 0 ? d.Counts+"%" : 'no data'}</p>
         `
     }
 
