@@ -8,9 +8,10 @@ import d3Tip from 'd3-tip'
 let viz3Data = []
 let viz3DataAvance = []
 let viz3DataRetard = []
+let tooltipShowAll = false
 
 export function updateData(filteredData) {
-    viz3Data = preprocess.aggregatePonctualite(filteredData.byLineDirectionDateStop, ['arret_nom'])
+    viz3Data = preprocess.aggregatePonctualite(filteredData.byLineDirectionDate, ['arret_nom'])
     viz3Data.sort((a, b) => a['sequence_arret'] - b['sequence_arret'])
 
     viz3Data = viz3Data.map((value) => {
@@ -34,6 +35,8 @@ export function updateData(filteredData) {
 export const viz = (selection, props) => {
     const {
         data,
+        stop,
+        ALL_STOPS,
         render
     } = props
 
@@ -80,10 +83,12 @@ export const viz = (selection, props) => {
             .attr('y', margin.top + innerHeight / 2)
             .attr('class', 'ylabel')
     
+    tooltipShowAll = stop != ALL_STOPS
+    const arret = stop == ALL_STOPS ? 'Arrêts' : stop
     selection.select('.viz3-graph').selectAll('.xlabel')
         .data([null])
         .join('text')
-            .text('Arrêts')
+            .text(arret)
             .attr('text-anchor', 'middle')
             .attr('alignment-baseline', 'middle')
             .attr('x', margin.left + innerWidth / 2)
@@ -94,7 +99,7 @@ export const viz = (selection, props) => {
         .data([null])
         .join('g')
             .attr('transform', `translate(${margin.left}, ${margin.top})`)
-            .attr('class', 'yaxis')
+            .attr('class', 'yaxis no-line')
             .call(yAxis)
     
 
@@ -110,6 +115,11 @@ export const viz = (selection, props) => {
             .attr('x', d => xScale(d['arret_nom']))
             .attr('y', d => margin.top)
             .attr('fill', colors.TAUX_AVANCE_VIZ3)
+            .attr('opacity', function(d) {
+                if (d['arret_nom'] != stop && stop != ALL_STOPS)
+                    return OPACITY_UNSELECTED
+                return 1
+            })
             .on('mouseover', function(d) {
                 tooltip.show(d, this)
             })
@@ -124,6 +134,13 @@ export const viz = (selection, props) => {
             .attr('x', d => xScale(d['arret_nom']))
             .attr('y', d => (height - margin.bottom) - (yScale(d['taux_Ponctuel'] + d['taux_Retard'])))
             .attr('fill', colors.TAUX_PONCTUEL_VIZ3)
+            .attr('opacity', function(d) {
+                if (d['arret_nom'] != stop && stop != ALL_STOPS)
+                    return OPACITY_UNSELECTED
+                else if (d['arret_nom'] == stop)
+                    tooltip.show(d, this)
+                return 1
+            })
             .on('mouseover', function(d) {
                 tooltip.show(d, this)
             })
@@ -138,6 +155,11 @@ export const viz = (selection, props) => {
             .attr('x', d => xScale(d['arret_nom']))
             .attr('y', d => (height - margin.bottom) - yScale(d['taux_Retard']))
             .attr('fill', colors.TAUX_RETARD_VIZ3)
+            .attr('opacity', function(d) {
+                if (d['arret_nom'] != stop && stop != ALL_STOPS)
+                    return OPACITY_UNSELECTED
+                return 1
+            })
             .on('mouseover', function(d) {
                 tooltip.show(d, this)
             })
@@ -149,29 +171,37 @@ function getToolTipHTML(d) {
     const tresholdMerge = 0.05 // Tooltip will show multiple percentages if some percentages are small.
     let keyValues = ''
 
-    if (d.taux == ID_AVANCE || d.taux_Avance <= tresholdMerge) {
+    if (tooltipShowAll || d.taux == ID_AVANCE || d.taux_Avance <= tresholdMerge) {
         keyValues += getKeyValue('Avance', (d.taux_Avance * 100.0).toFixed(2), colors.TAUX_AVANCE_VIZ3)
     }
-    if (d.taux == ID_PONCTUEL || d.taux_Ponctuel <= tresholdMerge) {
+    if (tooltipShowAll || d.taux == ID_PONCTUEL || d.taux_Ponctuel <= tresholdMerge) {
         keyValues += getKeyValue('Ponctuel', (d.taux_Ponctuel * 100.0).toFixed(2), colors.TAUX_PONCTUEL_VIZ3)
     }
-    if (d.taux == ID_RETARD || d.taux_Retard <= tresholdMerge) {
+    if (tooltipShowAll || d.taux == ID_RETARD || d.taux_Retard <= tresholdMerge) {
         keyValues += getKeyValue('Retard', (d.taux_Retard * 100.0).toFixed(2), colors.TAUX_RETARD_VIZ3)
     }
     
     return `
-        <p class="viz3-tooltip-value"><strong>Arrêt : </strong>${d.arret_nom}</p>
-        <p class="viz3-tooltip-value"><strong>Sequence : </strong>${d['sequence_arret']}</p>
-        ${keyValues}
+        <p class="viz3-tooltip-value"><strong></strong>${d.arret_nom}</p>
+        <table>
+            <tr>
+                <td><p class="viz3-tooltip-value"><strong>Séquence</strong></p></td>
+                <td><p class="viz3-tooltip-value"> : ${d['sequence_arret']}</p></td>
+            </tr>
+            ${keyValues}
+        </table>
     `
 }
 
 function getKeyValue(key, value, color) {
-    return `<p class="viz3-tooltip-value">
-        <strong><span style="color:${color};">${key}</span> : </strong>${value} %
-    </p>`
+    return `<tr>
+        <td><p class="viz3-tooltip-value"><strong><span style="color:${color};">${key}</span></td>
+        <td><p class="viz3-tooltip-value"> : ${value} %</td>
+    </tr>`
 }
 
 const ID_AVANCE = 0
 const ID_PONCTUEL = 1
 const ID_RETARD = 2
+
+const OPACITY_UNSELECTED = 0.3

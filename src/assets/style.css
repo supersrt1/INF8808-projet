@@ -175,9 +175,15 @@ svg {
     margin: 0;
 }
 
+/* VIZ 3 */
 .viz3-tooltip-value {
     font-size: 14px;
     margin: 0;
+}
+
+/* Hides vertical bar in y-axis*/
+.no-line .domain {
+    display:none;
 }
 
 .viz4-tooltip-value {

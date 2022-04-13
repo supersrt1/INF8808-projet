@@ -152,6 +152,8 @@ const render = () => {
     
     svg3.call(viz3.viz, {
         data: filteredData,
+        stop: stop,
+        ALL_STOPS: ALL_STOPS,
         render: render
     })
     
