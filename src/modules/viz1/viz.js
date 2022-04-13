@@ -107,7 +107,7 @@ export const viz = (selection, props) => {
             .attr('opacity', d => {
                 const date = helper.createLocalDate(+d.key)
                 if (date < dateFilter[0] || date > (dateFilter[1]))
-                    return 0.4 // Lorsqu'à l'extérieur de l'interval de dates
+                    return 0.3 // Lorsqu'à l'extérieur de l'interval de dates
                 return 1 // Lorsque dans l'interval de dates
             })
             .on('mouseover', function(d, i) {
@@ -121,14 +121,15 @@ export const viz = (selection, props) => {
     let filterMaxSelected = false
     const posMin = helper.getDaysBetweenDates(dateFilter[0], dateScale.domain()[0])
     const posMax = helper.getDaysBetweenDates(dateFilter[1], dateScale.domain()[1])
+    const filtersOverflow = 5
     const minLine = gData.selectAll('.viz1-min-filter')
         .data([null])
         .join('line')
             .attr('class', 'viz1-min-filter')
             .attr('x1', dayWidth * posMin)
             .attr('x2', dayWidth * posMin)
-            .attr('y1', 0)
-            .attr('y2', innerHeight)
+            .attr('y1', -filtersOverflow)
+            .attr('y2', innerHeight + filtersOverflow)
             .attr('stroke', 'black')
             .attr('stroke-width', 3)
             .on('mouseover', function() {
@@ -150,8 +151,8 @@ export const viz = (selection, props) => {
             .attr('class', 'viz1-max-filter')
             .attr('x1', dayWidth * (diffDays - posMax))
             .attr('x2', dayWidth * (diffDays - posMax))
-            .attr('y1', 0)
-            .attr('y2', innerHeight)
+            .attr('y1', -filtersOverflow)
+            .attr('y2', innerHeight + filtersOverflow)
             .attr('stroke', 'black')
             .attr('stroke-width', 3)
             .on('mouseover', function() {
