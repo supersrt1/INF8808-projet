@@ -168,27 +168,30 @@ export const viz = (selection, props) => {
                 d3.select(this).attr('stroke', '#222')
             })
 
+    const applyFilterChange = () => {
+        if(filterMinSelected){
+            filterMinSelected = false
+            minLine.attr('stroke', 'black')
+                .attr('stroke-width', 3)
+            
+            const newMinValue = helper.convertLocalDateToDateNumber(helper.addDays(dateScale.domain()[0], Math.round(+minLine.attr('x1') / dayWidth)))
+            const newMaxValue = helper.convertLocalDateToDateNumber(dateFilter[1])
+            setDateFilter(newMinValue, newMaxValue)
+        }
+        if(filterMaxSelected){
+            filterMaxSelected = false
+            maxLine.attr('stroke', 'black')
+                .attr('stroke-width', 3)
+            
+            const newMinValue = helper.convertLocalDateToDateNumber(dateFilter[0])
+            const newMaxValue = helper.convertLocalDateToDateNumber(helper.addDays(dateScale.domain()[0], Math.round(+maxLine.attr('x1') / dayWidth) - 1))
+            setDateFilter(newMinValue, newMaxValue)
+        }
+    }
+
     d3.select('body')
-        .on('mouseup', function() {
-            if(filterMinSelected){
-                filterMinSelected = false
-                minLine.attr('stroke', 'black')
-                    .attr('stroke-width', 3)
-                
-                const newMinValue = helper.convertLocalDateToDateNumber(helper.addDays(dateScale.domain()[0], Math.round(+minLine.attr('x1') / dayWidth)))
-                const newMaxValue = helper.convertLocalDateToDateNumber(dateFilter[1])
-                setDateFilter(newMinValue, newMaxValue)
-            }
-            if(filterMaxSelected){
-                filterMaxSelected = false
-                maxLine.attr('stroke', 'black')
-                    .attr('stroke-width', 3)
-                
-                const newMinValue = helper.convertLocalDateToDateNumber(dateFilter[0])
-                const newMaxValue = helper.convertLocalDateToDateNumber(helper.addDays(dateScale.domain()[0], Math.round(+maxLine.attr('x1') / dayWidth) - 1))
-                setDateFilter(newMinValue, newMaxValue)
-            }
-        })
+        .on('mouseup', applyFilterChange)
+        .on('mouseleave', applyFilterChange)
         .on('mousemove', function() {
             if(filterMinSelected){
                 const offset = Math.min(Math.max(0, Math.round(d3.mouse(gData.node())[0] / innerWidth * diffDays)), diffDays - posMax - 1)
