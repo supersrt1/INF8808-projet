@@ -37,7 +37,7 @@ h3 {
     font-size: 15px;
 }
 
-svg {
+svg:not(#map-svg) {
     display: block;
     margin: auto;
     background-color: white;
@@ -173,4 +173,11 @@ svg {
 .viz1-tooltip-value {
     font-size: 10px;
     margin: 0;
+}
+
+
+/* VIZ 2 */
+
+#map {
+    height: 350px;
 }

@@ -8,6 +8,7 @@
 
         <link rel="stylesheet" href="assets/style.css">
         <link rel="stylesheet" href="assets/tooltip.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
     </head>
 
     <body>
@@ -38,7 +39,8 @@
 
                 <h3>Achalandage</h3>
                 <div class="viz-container">
-                    <svg id="viz2-svg"></svg>
+                     <div id="map"></div>
+                    <!--svg id="viz2-svg"></svg-->
                 </div>
 
                 <h3>Ponctualité</h3>
@@ -63,6 +65,7 @@
         </div>
 
         <script src="https://d3js.org/d3.v5.js"></script>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
         <script type="module" src="index.js"></script>
       </body>
 </html>
