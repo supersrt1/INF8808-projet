@@ -154,6 +154,8 @@ const render = () => {
         data: filteredData,
         stop: stop,
         ALL_STOPS: ALL_STOPS,
+        direction: direction,
+        BOTH_DIRECTION: BOTH_DIRECTION,
         render: render
     })
     

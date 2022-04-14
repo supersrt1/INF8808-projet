@@ -6,10 +6,15 @@ import d3Tip from 'd3-tip'
 /* eslint-disable indent */
 
 let viz3Data = []
+let displayDirection = false
 
 export function updateData(filteredData) {
     viz3Data = preprocess.aggregatePonctualite(filteredData.byLineDirectionDate, ['arret_nom'])
-    viz3Data.sort((a, b) => a['sequence_arret'] - b['sequence_arret'])
+    viz3Data.sort(function(a, b) {
+        return a['direction'].localeCompare(b['direction']) || (
+            a['sequence_arret'] - b['sequence_arret']
+        )
+    })
 }
 
 export const viz = (selection, props) => {
@@ -17,6 +22,8 @@ export const viz = (selection, props) => {
         data,
         stop,
         ALL_STOPS,
+        direction,
+        BOTH_DIRECTION,
         render
     } = props
 
@@ -82,6 +89,7 @@ export const viz = (selection, props) => {
             .call(yAxis)
     
 
+    displayDirection = direction == BOTH_DIRECTION
     const tooltip = d3Tip().attr('class', 'd3-tip').html(getToolTipHTML)
     selection.call(tooltip)
     
@@ -152,6 +160,14 @@ function getToolTipHTML(d) {
         getKeyValue('Ponctuel', (d.taux_Ponctuel * 100.0).toFixed(2), colors.TAUX_PONCTUEL_VIZ3) +
         getKeyValue('Retard', (d.taux_Retard * 100.0).toFixed(2), colors.TAUX_RETARD_VIZ3)
     )
+
+    let direction = ''
+    if (displayDirection) {
+        direction = `<tr>
+            <td><p class="viz3-tooltip-value"><strong>Direction</strong></p></td>
+            <td><p class="viz3-tooltip-value"> : ${d['direction']}</p></td>
+        </tr>`
+    }
     
     return `
         <p class="viz3-tooltip-value"><strong></strong>${d.arret_nom}</p>
@@ -160,6 +176,7 @@ function getToolTipHTML(d) {
                 <td><p class="viz3-tooltip-value"><strong>Séquence</strong></p></td>
                 <td><p class="viz3-tooltip-value"> : ${d['sequence_arret']}</p></td>
             </tr>
+            ${direction}
             ${keyValues}
         </table>
     `
