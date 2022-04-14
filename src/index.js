@@ -13,7 +13,6 @@ const svg4b = d3.select('#viz4b-svg')
 
 // Datasets without filtering
 let exoData
-let geoData
 
 // Filters and dynamic properties
 let line
@@ -85,8 +84,8 @@ const refreshFilteredData = (updatedFilter=0) => {
             filteredData.byLineDirection = filteredData.byLine.filter(element => element['direction'] == direction)
     }
     if (updatedFilter <= DATE_FILTER) {
-        const minDate = dateFilter[0].getTime()
-        const maxDate = dateFilter[1].getTime()
+        const minDate = helper.convertLocalDateToDateNumber(dateFilter[0])
+        const maxDate = helper.convertLocalDateToDateNumber(dateFilter[1])
         filteredData.byLineDirectionDate = filteredData.byLineDirection.filter(
             element => minDate <= element['date_number'] && element['date_number'] <= maxDate)
     }
@@ -153,6 +152,8 @@ const render = () => {
     
     svg3.call(viz3.viz, {
         data: filteredData,
+        stop: stop,
+        ALL_STOPS: ALL_STOPS,
         render: render
     })
     
@@ -175,21 +176,18 @@ window.addEventListener('resize', () => {
     render()
 })
 
-Promise.all([
-    d3.csv('./exo_data.csv'),
-    d3.json('./montreal.json')
-]).then(([fetchExoData, fetchGeoData]) => {
+d3.csv('./exo_data.csv')
+    .then(fetchExoData => {
         exoData = preprocess.convertStringToNumberForNumericFields(
             preprocess.addMetaData(fetchExoData)
         )
-        geoData = fetchGeoData
         setDefaultFilters(exoData)
         refreshFilteredData()
         updateFilterOptions()
         setFilterListeners()
 
         // Useful for development - Can be removed safely -----
-        helper.debugLogAllUniqueValues(exoData)
+        // helper.debugLogAllUniqueValues(exoData)
         // ----------------------------------------------------
 
         render()

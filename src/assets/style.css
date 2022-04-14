@@ -49,6 +49,10 @@ svg:not(#map-svg) {
     width: 100%;
 }
 
+.d3-tip {
+    z-index: 1000;
+}
+
 /* */
 
 * {
@@ -82,7 +86,7 @@ svg:not(#map-svg) {
     .col-s-11 {width: 91.66%;}
     .col-s-12 {width: 100%;}
   }
-  @media only screen and (min-width: 1000px) {
+  @media only screen and (min-width: 1200px) {
     /* For desktop: */
     .col-1 {width: 8.33%;}
     .col-2 {width: 16.66%;}
@@ -180,4 +184,19 @@ svg:not(#map-svg) {
 
 #map {
     height: 350px;
+}
+/* VIZ 3 */
+.viz3-tooltip-value {
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Hides vertical bar in y-axis*/
+.no-line .domain {
+    display:none;
+}
+
+.viz4-tooltip-value {
+    font-size: 10px;
+    margin: 0;
 }
