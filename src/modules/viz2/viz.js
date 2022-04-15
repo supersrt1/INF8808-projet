@@ -90,12 +90,16 @@ export const viz = (selection, props) => {
                         .key(d=> d.arret_code)
                         .rollup(v => { return {name: v[0].arret_nom, cumulatif: d3.sum(v, d => d.montants), lon: v[0].arret_Longitude, lat: v[0].arret_Latitude}})
                         .entries(data.byLineDirectionDateStop);
-                        
+    
+    groupedData.sort((a, b)=> b.value.cumulatif - a.value.cumulatif)                    
     //console.log("DATA", groupedData);
 
     groupedData.forEach((v)=> {
         v.value.area = Math.sqrt(v.value.cumulatif/Math.PI)
     });
+
+
+    
 
     // LEGEND
     makeLegend();
