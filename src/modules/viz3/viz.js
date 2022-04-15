@@ -6,29 +6,14 @@ import d3Tip from 'd3-tip'
 /* eslint-disable indent */
 
 let viz3Data = []
-let viz3DataAvance = []
-let viz3DataRetard = []
-let tooltipShowAll = false
+let displayDirection = false
 
 export function updateData(filteredData) {
     viz3Data = preprocess.aggregatePonctualite(filteredData.byLineDirectionDate, ['arret_nom'])
-    viz3Data.sort((a, b) => a['sequence_arret'] - b['sequence_arret'])
-
-    viz3Data = viz3Data.map((value) => {
-        value['taux'] = ID_PONCTUEL
-        return value
-    })
-
-    viz3DataAvance = viz3Data.map((value) => {
-        return Object.assign({}, value, {
-            'taux': ID_AVANCE
-        })
-    })
-
-    viz3DataRetard = viz3Data.map(function(value) {
-        return Object.assign({}, value, {
-            'taux': ID_RETARD
-        })
+    viz3Data.sort(function(a, b) {
+        return a['direction'].localeCompare(b['direction']) || (
+            a['sequence_arret'] - b['sequence_arret']
+        )
     })
 }
 
@@ -37,6 +22,8 @@ export const viz = (selection, props) => {
         data,
         stop,
         ALL_STOPS,
+        direction,
+        BOTH_DIRECTION,
         render
     } = props
 
@@ -83,7 +70,6 @@ export const viz = (selection, props) => {
             .attr('y', margin.top + innerHeight / 2)
             .attr('class', 'ylabel')
     
-    tooltipShowAll = stop != ALL_STOPS
     const arret = stop == ALL_STOPS ? 'Arrêts' : stop
     selection.select('.viz3-graph').selectAll('.xlabel')
         .data([null])
@@ -103,11 +89,12 @@ export const viz = (selection, props) => {
             .call(yAxis)
     
 
+    displayDirection = direction == BOTH_DIRECTION
     const tooltip = d3Tip().attr('class', 'd3-tip').html(getToolTipHTML)
     selection.call(tooltip)
     
     selection.select('.viz3-graph').selectAll('.viz3-element-avance')
-        .data(viz3DataAvance)
+        .data(viz3Data)
         .join('rect')
             .attr('class', 'viz3-element-avance')
             .attr('width', xScale.bandwidth())
@@ -147,7 +134,7 @@ export const viz = (selection, props) => {
             .on('mouseout', tooltip.hide)
     
     selection.select('.viz3-graph').selectAll('.viz3-element-retard')
-        .data(viz3DataRetard)
+        .data(viz3Data)
         .join('rect')
             .attr('class', 'viz3-element-retard')
             .attr('width', xScale.bandwidth())
@@ -168,17 +155,18 @@ export const viz = (selection, props) => {
 }
 
 function getToolTipHTML(d) {
-    const tresholdMerge = 0.05 // Tooltip will show multiple percentages if some percentages are small.
-    let keyValues = ''
+    let keyValues = (
+        getKeyValue('Avance', (d.taux_Avance * 100.0).toFixed(2), colors.TAUX_AVANCE_VIZ3) +
+        getKeyValue('Ponctuel', (d.taux_Ponctuel * 100.0).toFixed(2), colors.TAUX_PONCTUEL_VIZ3) +
+        getKeyValue('Retard', (d.taux_Retard * 100.0).toFixed(2), colors.TAUX_RETARD_VIZ3)
+    )
 
-    if (tooltipShowAll || d.taux == ID_AVANCE || d.taux_Avance <= tresholdMerge) {
-        keyValues += getKeyValue('Avance', (d.taux_Avance * 100.0).toFixed(2), colors.TAUX_AVANCE_VIZ3)
-    }
-    if (tooltipShowAll || d.taux == ID_PONCTUEL || d.taux_Ponctuel <= tresholdMerge) {
-        keyValues += getKeyValue('Ponctuel', (d.taux_Ponctuel * 100.0).toFixed(2), colors.TAUX_PONCTUEL_VIZ3)
-    }
-    if (tooltipShowAll || d.taux == ID_RETARD || d.taux_Retard <= tresholdMerge) {
-        keyValues += getKeyValue('Retard', (d.taux_Retard * 100.0).toFixed(2), colors.TAUX_RETARD_VIZ3)
+    let direction = ''
+    if (displayDirection) {
+        direction = `<tr>
+            <td><p class="viz3-tooltip-value"><strong>Direction</strong></p></td>
+            <td><p class="viz3-tooltip-value"> : ${d['direction']}</p></td>
+        </tr>`
     }
     
     return `
@@ -188,6 +176,7 @@ function getToolTipHTML(d) {
                 <td><p class="viz3-tooltip-value"><strong>Séquence</strong></p></td>
                 <td><p class="viz3-tooltip-value"> : ${d['sequence_arret']}</p></td>
             </tr>
+            ${direction}
             ${keyValues}
         </table>
     `
@@ -199,9 +188,5 @@ function getKeyValue(key, value, color) {
         <td><p class="viz3-tooltip-value"> : ${value} %</td>
     </tr>`
 }
-
-const ID_AVANCE = 0
-const ID_PONCTUEL = 1
-const ID_RETARD = 2
 
 const OPACITY_UNSELECTED = 0.3
