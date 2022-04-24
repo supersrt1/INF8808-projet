@@ -90,6 +90,8 @@ function makeLegend(rscale){
     } = legendSvg.node().getBoundingClientRect()
 
     const SCALES = [100, 1000, 10000]
+    if (rscale.domain()[1] < 75000) SCALES.pop();
+    if (rscale.domain()[1] < 1000) SCALES.pop();
 
     const CELL_SIZE = width/ SCALES.length;
 
