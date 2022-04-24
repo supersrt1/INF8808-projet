@@ -185,6 +185,19 @@ svg:not(#map-svg) {
 #map {
     height: 350px;
 }
+
+/* Not used */
+.viz2-legend {
+    width: 150px;
+    height: 50px;
+}
+
+.bg-white
+{
+    background-color: white;
+}
+
+
 /* VIZ 3 */
 .viz3-tooltip-value {
     font-size: 14px;
