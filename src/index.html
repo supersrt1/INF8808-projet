@@ -17,25 +17,32 @@
             <h1>Tableau de bord : Ponctualité et Achalandage</h1>
         </div>
 
-        <div id="section-filter">
-            <h2>FILTRAGE</h2>
+        <div class="row">
+            <div id="section-filter">
+                <div class="viz-delimited-bg">
+                    <!--<h2>FILTRAGE</h2>-->
+                    <h2>Filtrage</h2>
 
-            <div class="viz-container">                
-                <!-- Proof that filters work. Can be refactored. -->
-                <select class="filter-line"></select>
-                <select class="filter-direction"></select>
-                <select class="filter-stop"></select>
-            </div>
+                    <div class="viz-container">                
+                        <!-- Proof that filters work. Can be refactored. -->
+                        <select class="filter-line"></select>
+                        <select class="filter-direction"></select>
+                        <select class="filter-stop"></select>
+                    </div>
 
-            <div class="viz-container">
-                <svg id="viz1-svg"></svg>
+                    <div class="viz-container">
+                        <svg id="viz1-svg"></svg>
+                    </div>
+                </div>
             </div>
         </div>
 
 
         <div class="row">
             <div class="col-6 col-s-12" id="section-by-stops">
-                <h2>ACHALANDAGE ET PONCTUALITÉ PAR ARRÊT</h2>
+                <div class="viz-delimited-bg">
+                    <!--<h2>ACHALANDAGE ET PONCTUALITÉ PAR ARRÊT</h2>-->
+                    <h2>Achalandage et Ponctualité par Arrêt</h2>
 
                 <h3>Achalandage</h3>
                 <div class="viz-container bg-white">
@@ -44,23 +51,27 @@
                     <!--svg id="viz2-svg"></svg-->
                 </div>
 
-                <h3>Ponctualité</h3>
-                <div class="viz-container">
-                    <svg id="viz3-svg"></svg>
+                    <h3>Ponctualité</h3>
+                    <div class="viz-container">
+                        <svg id="viz3-svg"></svg>
+                    </div>
                 </div>
             </div>
 
             <div class="col-6 col-s-12" id="section-by-period">
-                <h2>ACHALANDAGE EN FONCTION DE LA PÉRIODE TEMPORELLE</h2>
+                <div class="viz-delimited-bg">
+                    <!--<h2>ACHALANDAGE EN FONCTION DE LA PÉRIODE TEMPORELLE</h2>-->
+                    <h2>Achalandage en fonction de la Période Temporelle</h2>
 
-                <h3>Taux d'avance</h3>
-                <div class="viz-container">
-                    <svg id="viz4a-svg"></svg>
-                </div>
+                    <h3>Taux d'avance</h3>
+                    <div class="viz-container">
+                        <svg id="viz4a-svg"></svg>
+                    </div>
 
-                <h3>Taux de retard</h3>
-                <div class="viz-container">
-                    <svg id="viz4b-svg"></svg>
+                    <h3>Taux de retard</h3>
+                    <div class="viz-container">
+                        <svg id="viz4b-svg"></svg>
+                    </div>
                 </div>
             </div>
         </div>

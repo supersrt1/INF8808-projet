@@ -13,28 +13,32 @@ body > div:first-child {
 }
 
 #section-filter, .row > div {
-    background-color: lightgray;
     margin: 0px;
-    border-style: solid;
-    border-width: 1px;
-    padding-bottom: 20px;
+}
+
+.viz-delimited-bg {
+    background-color: hsl(0, 0%, 96%);
+    padding: 3px 5px;
+    margin: 3px 5px;
 }
 
 h1 {
     color: white;
-    margin: 10px 0;
-    font-size: 20px;
-    text-align: center;
-}
-
-h2 {
     margin: 5px 0;
     font-size: 20px;
     text-align: center;
 }
 
+h2 {
+    margin: 1px 0;
+    font-size: 18px;
+    color: hsl(0, 0%, 20%);
+    text-align: center;
+}
+
 h3 {
     font-size: 15px;
+    margin: 0px;
 }
 
 svg:not(#map-svg) {
@@ -45,7 +49,8 @@ svg:not(#map-svg) {
 }
 
 .viz-container {
-    padding: 0px 20px;
+    padding: 0px 10px;
+    margin-bottom: 3px;
     width: 100%;
 }
 
@@ -56,6 +61,7 @@ svg:not(#map-svg) {
 /* */
 
 * {
+  font-family: Arial, sans-serif;
   box-sizing: border-box;
 }
 
@@ -67,9 +73,7 @@ svg:not(#map-svg) {
 
 [class*="col-"] {
   float: left;
-  padding: 15px;
 }
-
 
 @media only screen and (min-width: 300px) {
     /* For tablets: */
@@ -85,8 +89,13 @@ svg:not(#map-svg) {
     .col-s-10 {width: 83.33%;}
     .col-s-11 {width: 91.66%;}
     .col-s-12 {width: 100%;}
-  }
-  @media only screen and (min-width: 1200px) {
+
+    .row {
+        padding-left: 0%;
+        padding-right: 0%;
+    }
+}
+@media only screen and (min-width: 1200px) {
     /* For desktop: */
     .col-1 {width: 8.33%;}
     .col-2 {width: 16.66%;}
@@ -100,12 +109,17 @@ svg:not(#map-svg) {
     .col-10 {width: 83.33%;}
     .col-11 {width: 91.66%;}
     .col-12 {width: 100%;}
-  }
+
+    .row {
+        padding-left: 8%;
+        padding-right: 8%;
+    }
+}
 
 /* FILTER SECTION PROPERTIES */
 
 #viz1-svg {
-    height: 150px;
+    height: 125px;
 }
 
 /* BY STOP SECTION PROPERTIES */
