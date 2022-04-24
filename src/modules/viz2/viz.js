@@ -53,12 +53,23 @@ function createMap(id, center, zoom) {
 }
 
 
+let rscale;
+
 export function updateData(filteredData) {
     // Optional, for performance
     //g_data = preprocess.aggregatePonctualite(filteredData.byLineDirectionDateStop, ['arret_code'])
+
+    const groupedData = d3.nest()
+                        .key(d=> d.arret_code)
+                        .rollup(v => { return {name: v[0].arret_nom, cumulatif: d3.sum(v, d => d.montants), lon: v[0].arret_Longitude, lat: v[0].arret_Latitude}})
+                        .entries(filteredData.raw);
+
+    const minMax = d3.extent(groupedData, d => d.value.cumulatif)
+    rscale = d3.scaleSqrt().domain(minMax).range([3, 30]);
+
 }
 
-function makeLegend(rscale){
+function makeLegend(){
     const LEGEND_WIDTH = 250;
     const LEGEND_HEIGHT = 75;
     const legendSvg = d3.select("#viz2-legend")
@@ -154,12 +165,8 @@ export const viz = (selection, props) => {
     const tooltip = d3Tip().attr('class', 'd3-tip').html(getTipContent)
     svg.call(tooltip)
 
-    // SCALE
-    const minMax = d3.extent(groupedData, d => d.value.cumulatif)
-    const rscale = d3.scaleSqrt().domain(minMax).range([2, 30]);
-
     // LEGEND
-    const legendUpdate = makeLegend(rscale);
+    const legendUpdate = makeLegend();
 
     // POINTS
     const circles = svg.selectAll('#circles')
